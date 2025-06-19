@@ -43,12 +43,15 @@ html {
 .content {
     position: relative;
     z-index: 10;
-    text-align: center;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: auto;
+    width: 90%;
+    max-width: 600px;
+    box-sizing: border-box;
 }
+
 
 .headline {
     font-size: clamp(2.5rem, 8vw, 6rem);
@@ -106,4 +109,24 @@ html {
     opacity: 0;
     z-index: 9999;
     transition: opacity 0.5s ease;
+}
+
+
+@media (max-width: 768px) {
+    .headline {
+        font-size: clamp(1.8rem, 6vw, 3rem);
+    }
+
+    .subline {
+        font-size: clamp(1rem, 4vw, 1.2rem);
+    }
+
+    .cta {
+        padding: 0.6rem 1.5rem;
+    }
+
+    .content {
+        width: 95%;
+        padding: 0 10px;
+    }
 }
