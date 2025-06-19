@@ -70,9 +70,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Paralasse mouse e touch
     function updateParallax(xRatio, yRatio) {
-        const maxMove = 30;
+        const isMobile = window.innerWidth < 768;
+        const maxMove = isMobile ? 15 : 30;
+
         const x = (xRatio - 0.5) * maxMove;
         const y = (yRatio - 0.5) * maxMove;
+
         gsap.to('.content', {
             x,
             y,
@@ -80,6 +83,7 @@ window.addEventListener('DOMContentLoaded', () => {
             ease: 'power2.out',
         });
     }
+
     document.addEventListener('mousemove', (e) => {
         updateParallax(e.clientX / window.innerWidth, e.clientY / window.innerHeight);
     });
