@@ -73,31 +73,45 @@ window.addEventListener('DOMContentLoaded', () => {
             '-=0.4'
         );
 
-    // Paralasse mouse e touch
-    function updateParallax(xRatio, yRatio) {
-        const isMobile = window.innerWidth < 768;
-        const maxMove = isMobile ? 15 : 30;
+    // ✅ PARALLASSE FLUIDO DESKTOP/MOBILE (basato su vecchio progetto warp.js)
+    let mouseX = 0, mouseY = 0;
+    let velocityX = 0, velocityY = 0;
+    const damping = 0.05;
+    const maxMove = 20;
 
-        const x = (xRatio - 0.5) * maxMove;
-        const y = (yRatio - 0.5) * maxMove;
+    function updateMotion(event) {
+        let x = ((event.clientX || event.touches?.[0]?.clientX || 0) / window.innerWidth - 0.5) * 5;
+        let y = ((event.clientY || event.touches?.[0]?.clientY || 0) / window.innerHeight - 0.5) * 5;
+
+        velocityX += (x - mouseX) * 0.8;
+        velocityY += (y - mouseY) * 0.8;
+
+        mouseX = x;
+        mouseY = y;
+    }
+
+    document.addEventListener('mousemove', updateMotion);
+    document.addEventListener('touchmove', updateMotion, { passive: true });
+
+    function animateParallax() {
+        requestAnimationFrame(animateParallax);
+
+        velocityX *= 1 - damping;
+        velocityY *= 1 - damping;
+
+        const moveX = velocityX * maxMove;
+        const moveY = velocityY * maxMove;
 
         gsap.to('.content', {
-            x,
-            y,
+            x: moveX,
+            y: moveY,
             duration: 0.5,
             ease: 'power2.out',
         });
     }
 
-    document.addEventListener('mousemove', (e) => {
-        updateParallax(e.clientX / window.innerWidth, e.clientY / window.innerHeight);
-    });
-    document.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-            const touch = e.touches[0];
-            updateParallax(touch.clientX / window.innerWidth, touch.clientY / window.innerHeight);
-        }
-    });
+    animateParallax();
+    // 🔚 Fine logica aggiornata per parallasse fluido
 
     // Click sul bottone CTA con fade out testi e overlay
     const cta = document.querySelector('.cta');
@@ -125,7 +139,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 duration: 2,
                 ease: 'power2.inOut',
             },
-            '-=1.5' // parte un po' prima che testi finiscano
+            '-=1.5'
         );
 
         // Ruota camera
